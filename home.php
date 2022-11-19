@@ -11,17 +11,24 @@ if (!isset($_SESSION['user'])) {
     exit;
 }
 
-$query = "SELECT * FROM users WHERE id={$_SESSION['user']}";
+$query = "SELECT * FROM animals";
 $result = mysqli_query($connect, $query);
-$row = mysqli_fetch_assoc($result);
+$cards="";
 
-$fname = $row['first_name'];
-$lname = $row['last_name'];
-$email = $row['email'];
-$phone = $row['phone_number'];
-$address = $row['address'];
-$pic = $row['picture'];
-$status = $row['status'];
+if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $cards .=
+            "<div class='col'>
+        <div class='card'>
+        <img src=" . $row['photo'] . ">
+        <div class='card-body'>
+        <h5 class='card-title'>". $row['name'] ."</h5>
+        <a href='details.php?id=". $row['animal_id'] ."' class='btn fs-5'>Details</a>
+    </div>
+  </div>
+</div>";
+    }
+}
 
 mysqli_close($connect);
 ?>
@@ -31,74 +38,62 @@ mysqli_close($connect);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome <?= $fname ?></title>
-    <?php require_once 'components/boot.php' ?>
+    <title>Pet Adoption</title>
+    <?php require_once 'components/bootstrap.php' ?>
+
+    <style>
+
+        .navbar {
+            background-color: pink !important;
+        }
+
+        body {
+            background-color: beige;
+        }
+
+        .card {
+            width: 20em;
+            height: 40em;
+            margin: 5% auto;
+        }
+
+        img {
+            width: 20em;
+            height: 20em;
+        }
+
+        nav {
+            height: 10vh;
+        }
+
+        .user-picture {
+            width: 1em;
+            height: 1em;
+            border-radius: 50%;
+        }
+    </style>
+
 </head>
 
 <body>
-    <div class="container py-5 h100">
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="card mb-4">
-                    <div class="card-body text-center">
-                        <img src="pictures/<?= $pic ?>" alt=" avatar" class="rounded-circle img-fluid" style="width: 150px;">
-                        <h5 class="my-4">Hi, <?= $fname ?></h5>
-                        <div class="d-flex justify-content-center mb-2">
-                            <a class=" btn btn-primary ms-1" href="update.php?id=<?= $_SESSION['user'] ?>">Update your profile</a>
-                            <a class="btn btn-outline-primary ms-1" href="logout.php?logout">Log Out</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-8">
-                <div class="card card-body ">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Name</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0"><?= $fname ?></p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Lastname</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0"><?= $lname ?></p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Email</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0"><?= $email ?></p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Phone number^</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0"><?= $phone ?></p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Status</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0"><?= $status ?></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+  <h4 style="margin-right: 10%;"><img class="user-picture" src="./pictures/247-2472348_admin-user-shape-hd-png-download.png"> Hi, Arman</h4>
+    <a class="navbar-brand" href="./home.php">Animal Adoption</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-link active" aria-current="page" href="./home.php">Home</a>
+        <a class="nav-link" href="./seniors.php">Seniors</a>
+        <a class="nav-link" href="./logout.php?logout">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+    <div class='row row-cols-xxl-3 row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 row-cols-xs-1 g-5'>
+        <?= $cards ?>
     </div>
 </body>
 

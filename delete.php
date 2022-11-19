@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once 'components/db_connect.php';
-// if session is not set this will redirect to login page
 if (!isset($_SESSION['adm']) && !isset($_SESSION['user'])) {
     header("Location: index.php");
     exit;
@@ -10,19 +9,18 @@ if (isset($_SESSION["user"])) {
     header("Location: home.php");
     exit;
 }
-//initial bootstrap class for the confirmation message
 $class = 'd-none';
-//the GET method will show the info from the user to be deleted
 if ($_GET['id']) {
     $id = $_GET['id'];
-    $sql = "SELECT * FROM users WHERE id = {$id}";
+    $sql = "SELECT * FROM users WHERE user_id = {$id}";
     $result = mysqli_query($connect, $sql);
     $data = mysqli_fetch_assoc($result);
     if (mysqli_num_rows($result) == 1) {
-        $f_name = $data['first_name'];
-        $l_name = $data['last_name'];
+        $fname = $data['first_name'];
+        $lname = $data['last_name'];
         $email = $data['email'];
-        $date_of_birth = $data['date_of_birth'];
+        $phone = $data['phone_number'];
+        $address = $data['address'];
         $picture = $data['picture'];
     }
 }
@@ -30,7 +28,6 @@ if ($_GET['id']) {
 if ($_POST) {
     $id = $_POST['id'];
     $picture = $_POST['picture'];
-    ($picture == "avatar.png") ?: unlink("pictures/$picture");
 
     $sql = "DELETE FROM users WHERE id = {$id}";
     if ($connect->query($sql) === TRUE) {

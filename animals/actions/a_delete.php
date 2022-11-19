@@ -12,10 +12,8 @@ if (isset($_SESSION['user'])) {
 }
 if ($_POST) {
     $id = $_POST['id'];
-    $picture = $_POST['picture'];
-    ($picture == "product.png") ?: unlink("../../pictures/$picture");
 
-    $sql = "DELETE FROM products WHERE id = {$id}";
+    $sql = "DELETE FROM animals WHERE animal_id = {$id}";
     if (mysqli_query($connect, $sql) === TRUE) {
         $class = "success";
         $message = "Successfully Deleted!";
@@ -35,7 +33,7 @@ if ($_POST) {
 <head>
     <meta charset="UTF-8">
     <title>Delete</title>
-    <?php require_once '../../components/boot.php' ?>
+    <?php require_once '../../components/bootstrap.php' ?>
 </head>
 
 <body>

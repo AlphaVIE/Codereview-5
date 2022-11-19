@@ -11,12 +11,11 @@ if (isset($_SESSION['adm'])) {
     exit;
 }
 require_once 'components/db_connect.php';
-require_once 'components/file_upload.php';
 
 $error = false;
 
-$fname = $lname = $date_of_birth = $email = $pass = $picture = "";
-$fnameError = $lnameError = $dateError = $emailError = $passError = $picError = "";
+$fname = $lname = $email = $phone = $address = $picture = $pass = "";
+$fnameError = $lnameError = $emailError = $phoneError = $addressError = $picError = $passError = "";
 
 
 if (isset($_POST['btn-signup'])) {
@@ -32,16 +31,23 @@ if (isset($_POST['btn-signup'])) {
     $email = strip_tags($email);
     $email = htmlspecialchars($email);
 
-    $date_of_birth = trim($_POST['date_of_birth']);
-    $date_of_birth = strip_tags($date_of_birth);
-    $date_of_birth = htmlspecialchars($date_of_birth);
+    $phone = trim($_POST['phone']);
+    $phone = strip_tags($phone);
+    $phone = htmlspecialchars($phone);
+
+    $address = trim($_POST['address']);
+    $address = strip_tags($address);
+    $address = htmlspecialchars($address);
+
+    $picture = trim($_POST['picture']);
+    $picture = strip_tags($picture);
+    $picture = htmlspecialchars($picture);
 
     $pass = trim($_POST['pass']);
     $pass = strip_tags($pass);
     $pass = htmlspecialchars($pass);
 
     $uploadError = "";
-    $picture = file_upload($_FILES['picture']);
 
 
     if (empty($fname) || empty($lname)) {
@@ -53,11 +59,6 @@ if (isset($_POST['btn-signup'])) {
     } elseif (!preg_match("/^[a-zA-z]+$/", $fname) || !preg_match("/^[a-zA-z]+$/", $lname)) {
         $error = true;
         $fname = "Name and surname must contain only letters and no spaces";
-    }
-
-    if (empty($date_of_birth)) {
-        $error = true;
-        $dateError = "Please enter your date of birth";
     }
 
     if (empty($email)) {
@@ -87,19 +88,17 @@ if (isset($_POST['btn-signup'])) {
     $password = hash('sha256', $pass);
 
     if (!$error) {
-        $query = "INSERT INTO users(first_name, last_name, password, date_of_birth,email, picture) 
-        VALUES ('$fname', '$lname','$password','$date_of_birth', '$email', '$picture->fileName')";
+        $query = "INSERT INTO users(first_name, last_name, email, phone_number, address, picture, password) 
+        VALUES ('$fname', '$lname', '$email', '$phone', '$address', '$picture', '$password')";
 
         $res = mysqli_query($connect, $query);
 
         if ($res) {
             $errTyp = "success";
             $errMSG = "Successfully registered, you may login now";
-            $uploadError = ($picture->error != 0) ? $picture->ErrorMessage : '';
         } else {
             $errTyp = "danger";
             $errMSG = "Something went wrong, try again later...";
-            $uploadError = ($picture->error != 0) ? $picture->ErrorMessage : '';
         }
     }
 }
@@ -114,7 +113,7 @@ mysqli_close($connect);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login and Registration System</title>
-    <?php require_once 'components/boot.php' ?>
+    <?php require_once 'components/bootstrap.php' ?>
 </head>
 
 <body>
@@ -138,43 +137,48 @@ mysqli_close($connect);
                             <div class="row">
                                 <div class="col-md-6 mb-4">
                                     <div class="form-outline">
-                                        <input type="text" name="fname" class="form-control" placeholder="First name" maxlength="50" value="<?php echo $fname ?>" />
+                                        <input type="text" name="fname" class="form-control" placeholder="First name" maxlength="50" />
                                         <span class="text-danger"> <?php echo $fnameError; ?> </span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-4">
                                     <div class="form-outline">
-                                        <input type="text" name="lname" class="form-control" placeholder="Surname" maxlength="50" value="<?php echo $lname ?>" />
+                                        <input type="text" name="lname" class="form-control" placeholder="Last name" maxlength="50" />
                                         <span class="text-danger"> <?php echo $fnameError; ?> </span>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-6 mb-4 d-flex align-items-center">
-                                    <div class="form-outline datepicker w-100">
-                                        <input class='form-control' type="date" name="date_of_birth" value="<?php echo $date_of_birth ?>" />
-                                        <span class="text-danger"> <?php echo $dateError; ?> </span>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-outline">
+                                        <input class='form-control' type="text" placeholder="Enter picture link here" name="picture">
+                                        <span class="text-danger"> <?php echo $picError; ?> </span>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-4">
                                     <div class="form-outline">
-                                        <input class='form-control' type="file" name="picture">
-                                        <span class="text-danger"> <?php echo $picError; ?> </span>
+                                        <input class='form-control' type="text" placeholder="Enter your address here" name="address">
+                                        <span class="text-danger"> <?php echo $addressError; ?> </span>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-12 mb-2 pb-2">
                                     <div class="form-outline">
-                                        <input type="email" name="email" class="form-control" placeholder="Enter Your Email" maxlength="40" value="<?php echo $email ?>" />
+                                        <input type="email" name="email" class="form-control" placeholder="Enter Your Email" maxlength="40" />
                                         <span class="text-danger"> <?php echo $emailError; ?> </span>
-
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-2 pb-2">
+                                    <div class="form-outline">
+                                        <input type="number" name="phone" class="form-control" placeholder="Enter your phone number" maxlength="40" />
+                                        <span class="text-danger"> <?php echo $emailError; ?> </span>
                                     </div>
                                 </div>
                                 <div class="col-md-12 mb-4 pb-2">
                                     <div class="form-outline">
-                                        <input type="password" name="pass" class="form-control" placeholder="Enter Password" maxlength="15" />
+                                        <input type="password" name="pass" class="form-control" placeholder="Enter Password" maxlength="64" />
                                         <span class="text-danger"> <?php echo $passError; ?> </span>
                                     </div>
 

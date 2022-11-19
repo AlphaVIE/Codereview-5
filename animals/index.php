@@ -11,18 +11,21 @@ if (isset($_SESSION['user'])) {
     exit;
 }
 
-$sql = "SELECT * FROM `products` left JOIN suppliers on products.fk_supplierId = suppliers.supplierId";
+$sql = "SELECT * FROM `animals` ";
 $result = mysqli_query($connect, $sql);
 $tbody = ''; //this variable will hold the body for the table
 if (mysqli_num_rows($result)  > 0) {
     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
         $tbody .= "<tr>
-            <td><img class='img-thumbnail' src='../pictures/" . $row['picture'] . "'</td>
+            <td><img class='img-thumbnail' src='" . $row['photo'] . "'</td>
             <td>" . $row['name'] . "</td>
-            <td>" . $row['price'] . "</td>
-            <td>" . $row['sup_name'] . "</td>
-            <td><a href='update.php?id=" . $row['id'] . "'><button class='btn btn-primary btn-sm' type='button'>Edit</button></a>
-            <a href='delete.php?id=" . $row['id'] . "'><button class='btn btn-danger btn-sm' type='button'>Delete</button></a></td>
+            <td>" . $row['location'] . "</td>
+            <td>" . $row['size'] . "</td>
+            <td>" . $row['age'] . "</td>
+            <td>" . $row['vaccinated'] . "</td>
+            <td>" . $row['breed'] . "</td>
+            <td><a href='update.php?id=" . $row['animal_id'] . "'><button class='btn btn-primary btn-sm' type='button'>Edit</button></a>
+            <a href='delete.php?id=" . $row['animal_id'] . "'><button class='btn btn-danger btn-sm' type='button'>Delete</button></a></td>
             </tr>";
     };
 } else {
@@ -38,8 +41,8 @@ mysqli_close($connect);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP CRUD</title>
-    <?php require_once '../components/boot.php' ?>
+    <title>CRUD</title>
+    <?php require_once '../components/bootstrap.php' ?>
     <style type="text/css">
         .manageProduct {
             margin: auto;
@@ -60,18 +63,21 @@ mysqli_close($connect);
 <body>
     <div class="manageProduct w-75 mt-3">
         <div class='mb-3'>
-            <a href="create.php"><button class='btn btn-primary' type="button">Add product</button></a>
+            <a href="create.php"><button class='btn btn-primary' type="button">Add Animal</button></a>
             <a href="../dashboard.php"><button class='btn btn-success' type="button">Dashboard</button></a>
         </div>
         <p class='h2'>Products</p>
         <table class='table table-striped'>
             <thead class='table-success'>
                 <tr>
-                    <th>Picture</th>
+                    <th>Photo</th>
                     <th>Name</th>
-                    <th>price</th>
-                    <th>Supplier</th>
-                    <th>Action</th>
+                    <th>Location</th>
+                    <th>Size</th>
+                    <th>Age</th>
+                    <th>Vaccinated</th>
+                    <th>Breed</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>

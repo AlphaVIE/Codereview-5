@@ -47,11 +47,11 @@ if (isset($_POST['btn-login'])) {
 
         if ($count == 1) {
             if ($row['status'] == "adm") {
-                $_SESSION['adm'] = $row['id'];
+                $_SESSION['adm'] = $row['user_id'];
                 header("Location: dashboard.php");
                 exit;
             } else {
-                $_SESSION['user'] = $row['id'];
+                $_SESSION['user'] = $row['user_id'];
                 header("Location: home.php");
                 exit;
             }
@@ -71,7 +71,7 @@ mysqli_close($connect);
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <?php require_once 'components/boot.php' ?>
+    <?php require_once 'components/bootstrap.php' ?>
 </head>
 
 <body>
@@ -90,7 +90,7 @@ mysqli_close($connect);
                             <div class="row">
                                 <div class="col-md-12 mb-2 pb-2">
                                     <div class="form-outline">
-                                        <input type="email" name="email" class="form-control form-control-lg" placeholder="Your Email" maxlength="40" value="<?php echo $email ?>" />
+                                        <input type="email" name="email" class="form-control form-control-lg" placeholder="Your Email" maxlength="40" />
                                         <span class="text-danger mx-2"><?php echo $emailError ?></span>
                                     </div>
                                 </div>

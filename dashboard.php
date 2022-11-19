@@ -11,23 +11,25 @@ if (isset($_SESSION["user"])) {
     exit;
 }
 
-$status = 'adm';
+$status = 'adm' || 'user';
 $sql = "SELECT * FROM users WHERE status != '$status'";
 $result = mysqli_query($connect, $sql);
-$tbody = '';
+$cardbody = '';
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
-        $tbody .= "<tr>
-            <td><img class='img-thumbnail rounded-circle' src=". $row['picture']. " alt=" . $row['first_name'] . "></td>
-            <td>" . $row['first_name'] . " " . $row['last_name'] . "</td>
-            <td>" . $row['date_of_birth'] . "</td>
-            <td>" . $row['email'] . "</td>y
-            <a href='update.php?id=" . $row['id'] . "'><button class='btn btn-primar btn-sm' type='button'>Edit</button></a>
-            <a href='delete.php?id=" . $row['id'] . "'><button class='btn btn-danger btn-sm' type='button'>Delete</button></a></td>
-         </tr>";
+        $cardbody .= "
+        <div class='col'>
+          <div class='card'>
+            <div class='card-body'>
+              <h5 class='card-title'> $row[first_name] $row[last_name] </h5>
+              <p>$row[email]</p>
+              <p>$row[status]</p>
+            </div>
+          </div>
+        </div>";
     }
 } else {
-    $tbody = "<tr><td colspan='5'><center>No Data Available </center></td></tr>";
+    $cardbody = "<h1>No users registered</h1>";
 }
 
 mysqli_close($connect);
@@ -43,24 +45,7 @@ mysqli_close($connect);
     <title>Hi, Administrator</title>
     <?php require_once 'components/bootstrap.php' ?>
     <style type="text/css">
-        .img-thumbnail {
-            width: 70px !important;
-            height: 70px !important;
-        }
 
-        td {
-            text-align: left;
-            vertical-align: middle;
-        }
-
-        tr {
-            text-align: center;
-        }
-
-        .userImage {
-            width: 100px;
-            height: auto;
-        }
     </style>
 </head>
 
@@ -69,31 +54,20 @@ mysqli_close($connect);
         <div class="row">
             <div class="col-lg-3 my-4">
                 <div class="card-body text-center">
-                    <img src="pictures/admavatar.png" alt=" avatar" class="rounded-circle img-fluid" style="width: 150px;">
+                    <img src="./pictures/Icons8-Windows-8-Users-Administrator-2.ico" alt="userpic" class="rounded-circle img-fluid" style="width: 150px;">
                     <h5 class="my-4">Administrator</h5>
                     <div class="d-flex justify-content-center mb-2">
                         <a class="btn btn-outline-primary ms-1" href="logout.php?logout">Log Out</a>
-                        <a class="btn btn-success ms-1" href="products/index.php">Products</a>
+                        <a class="btn btn-success ms-1" href="animals/index.php">Animals</a>
 
                     </div>
                 </div>
             </div>
             <div class="col-lg-8 mt-2">
                 <p class='h2'>Users</p>
-                <table class='table align-middle mb-0 bg-white'>
-                    <thead class='table-light'>
-                        <tr>
-                            <th>Picture</th>
-                            <th>Name</th>
-                            <th>Date of birth</th>
-                            <th>Email</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?= $tbody ?>
-                    </tbody>
-                </table>
+                    <div class='row row-cols-1 row-cols-md-2 g-4'>    
+                    <?= $cardbody ?>
+                    </div>
             </div>
         </div>
     </div>

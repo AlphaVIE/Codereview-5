@@ -1,7 +1,6 @@
 <?php
 session_start();
 require_once '../../components/db_connect.php';
-require_once '../../components/file_upload.php';
 
 if (!isset($_SESSION['adm']) && !isset($_SESSION['user'])) {
     header("Location: ../../index.php");
@@ -14,16 +13,17 @@ if (isset($_SESSION['user'])) {
 
 if ($_POST) {
     $name = $_POST['name'];
-    $price = $_POST['price'];
-    $uploadError = '';
-    $supplier = $_POST['supplier'];
-    //this function exists in the service file upload.
-    $picture = file_upload($_FILES['picture'], "product");
+    $photo = $_POST['photo'];
+    $location = $_POST['location'];
+    $size = $_POST['size'];
+    $age = $_POST['age'];
+    $vaccinated = $_POST['vaccinated'];
+    $breed = $_POST['breed'];
 
-    if ($supplier == 'none') {
-        $sql = "INSERT INTO products (name, price, picture) VALUES ('$name', $price,'$picture->fileName')";
+    if ($photo === 0) {
+        $sql = "INSERT INTO animals (name, photo, location, size, age, vaccinated, breed) VALUES ('$name', '$photo', '$location', '$size', '$age', '$vaccinated', '$breed')";
     } else {
-        $sql = "INSERT INTO products (name, price, picture, fk_supplierId) VALUES ('$name', $price,'$picture->fileName', $supplier)";
+        $sql = "INSERT INTO animals (name, photo, location, size, age, vaccinated, breed) VALUES ('$name', '$photo', '$location', '$size', '$age', '$vaccinated', '$breed')";
     }
 
 
@@ -32,13 +32,11 @@ if ($_POST) {
         $message = "The entry below was successfully created <br>
             <table class='table w-50'><tr>
             <td> $name </td>
-            <td> $price </td>
+            <td> $breed </td>
             </tr></table><hr>";
-        $uploadError = ($picture->error != 0) ? $picture->ErrorMessage : '';
     } else {
         $class = "danger";
         $message = "Error while creating record. Try again: <br>" . $connect->error;
-        $uploadError = ($picture->error != 0) ? $picture->ErrorMessage : '';
     }
     mysqli_close($connect);
 } else {
@@ -52,7 +50,7 @@ if ($_POST) {
 <head>
     <meta charset="UTF-8">
     <title>Update</title>
-    <?php require_once '../../components/boot.php' ?>
+    <?php require_once '../../components/bootstrap.php' ?>
 </head>
 
 <body>
